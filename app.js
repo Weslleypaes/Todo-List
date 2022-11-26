@@ -2,42 +2,82 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { render } = require('ejs');
 const date = require(__dirname + '/date.js');
+const mongoose = require('mongoose');
+
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const tasks = ['Comprar pão', 'Estudar Química'];
-const workItems = [];
+mongoose.connect('mongodb://localhost:27017/todolistDB');
+
+const taskSchema = new mongoose.Schema({
+    name: {
+        type: String
+    }
+});
+
+const Task = mongoose.model('task', taskSchema);
+
+const task1 = new Task({
+    name: 'Estudar Matemática'
+});
+
+const task2 = new Task({
+    name: 'Estudar Física'
+});
+
+const task3 = new Task({
+    name: 'Almoçar'
+});
+
+const defaultTask = [task1, task2, task3];
 
 app.set('view engine', 'ejs');
 
 app.use(express.static("public"));
 
 app.get('/', function (req, res) {
+    // const day = date.getDate();
 
-    const day = date.getDate();
+    Task.find({}, function (err, items) {
+        console.log(items);
 
-    res.render('list', {
-        listTitle: day,
-        newItemInput: tasks
+        if (items.length === 0) {
+
+            Task.insertMany(defaultTask, function (err) {
+
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Success');
+                }
+
+            });
+
+            res.redirect('/')
+
+        } else {
+            res.render('list', { listTitle: 'today', newItemInput: items });
+        }
     });
+
+
 });
 
 // ** Input addItem **
 app.post('/', function (req, res) {
-    console.log(req.body);
-
+    // console.log(req.body);
     let item = req.body.newItem;
 
-    if (req.body.list === 'Work') {
-        workItems.push(item);
-        res.redirect('/work');
-    } else {
-        tasks.push(item);
-        res.redirect('/');
-    }
-})
+    const newTask = new Task({
+        name: item
+    });
+
+    newTask.save();
+
+    res.redirect('/');
+});
 
 app.get('/work', function (req, res) {
     res.render('list', { listTitle: 'Work List', newItemInput: workItems });
