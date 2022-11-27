@@ -1,7 +1,7 @@
 
 exports.getDate = function () {
 
-    const options = { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric'};
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'};
     
     const today = new Date();
 

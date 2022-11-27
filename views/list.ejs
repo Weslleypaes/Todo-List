@@ -6,20 +6,26 @@
      </div>
 
      <div class="box">
-               <% newItemInput.forEach(function(item){ %>
+          <% newItemInput.forEach(function(item){ %>
+
+               <form action="/delete" method="post">
+<!-- class 345 -->
                     <div class="item">
-                         <input type="checkbox">
+                         <input type="checkbox" name="checkbox" value="<%= item._id %>" onchange="this.form.submit()">
                          <p>
-                            <%= item.name %>
+                              <%= item.name %>
                          </p>
                     </div>
+
+               </form>
+
                <% }) %>
 
-               <form class="item" action="/" method="post">
-                    <input type="text" name="newItem" placeholder="Novo item" autocomplete="off">
-                    <button type="submit" name="list" value= <%= listTitle %> >+</button>
-               </form>
+                    <form class="item" action="/" method="post">
+                         <input type="text" name="newItem" placeholder="Novo item" autocomplete="off">
+                         <button type="submit" name="list" value=<%=listTitle %> >+</button>
+                    </form>
 
      </div>
 
-<%- include('footer'); -%>
+     <%- include('footer'); -%>

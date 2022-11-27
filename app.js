@@ -38,7 +38,7 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 
 app.get('/', function (req, res) {
-    // const day = date.getDate();
+    const day = date.getDate();
 
     Task.find({}, function (err, items) {
         console.log(items);
@@ -58,10 +58,9 @@ app.get('/', function (req, res) {
             res.redirect('/')
 
         } else {
-            res.render('list', { listTitle: 'today', newItemInput: items });
+            res.render('list', { listTitle: day, newItemInput: items });
         }
     });
-
 
 });
 
@@ -78,6 +77,28 @@ app.post('/', function (req, res) {
 
     res.redirect('/');
 });
+
+app.post('/delete', function(req,res){
+
+const checkItemId = req.body.checkbox;
+
+// Task.deleteOne({_id: checkItemId}, function(err){
+//     if(err){
+//         console.log(err);
+//     }else {
+//         console.log('Deleted with success');
+//     }
+// });
+    Task.findByIdAndRemove(checkItemId, function(err){
+        if(err){
+            console.log(err);
+        }else{
+            console.log('Deleted with success');
+        }
+    });
+
+    res.redirect('/')
+})
 
 app.get('/work', function (req, res) {
     res.render('list', { listTitle: 'Work List', newItemInput: workItems });

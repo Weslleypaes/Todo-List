@@ -50,7 +50,7 @@ p {
   color: #030d1b;
 }
 
-form {
+form.item {
   text-align: center;
   margin-left: 20px;
 }
